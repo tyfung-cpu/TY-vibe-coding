@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Signal</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+JP:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+    :root {
+      --ink: #16221c;
+      --muted: #637069;
+      --paper: #f3f0e8;
+      --panel: #fbfaf6;
+      --line: #cbd2c9;
+      --accent: #e85d36;
+      --accent-dark: #b23b20;
+      --shadow: 0 20px 60px rgba(30, 43, 35, 0.13);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 10% 10%, rgba(232, 93, 54, 0.18), transparent 24rem),
+        linear-gradient(135deg, #f3f0e8 0%, #e4e9df 100%);
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    main {
+      width: min(100% - 40px, 880px);
+      min-height: 100vh;
+      margin: 0 auto;
+      display: grid;
+      place-items: center;
+      padding: 48px 0;
+    }
+
+    .interface {
+      width: 100%;
+      padding: clamp(28px, 6vw, 72px);
+      background: rgba(251, 250, 246, 0.88);
+      border: 1px solid rgba(203, 210, 201, 0.9);
+      box-shadow: var(--shadow);
+      animation: arrive 650ms cubic-bezier(.2, .8, .2, 1) both;
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 34px;
+      color: var(--muted);
+      font: 500 12px/1 'DM Mono', monospace;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: '';
+      width: 10px;
+      height: 10px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 0 5px rgba(232, 93, 54, 0.13);
+    }
+
+    h1 {
+      max-width: 620px;
+      margin: 0;
+      font-size: clamp(42px, 8vw, 82px);
+      line-height: 0.92;
+      letter-spacing: -0.04em;
+      font-weight: 600;
+    }
+
+    .intro {
+      max-width: 460px;
+      margin: 24px 0 42px;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.5;
+    }
+
+    form { display: grid; gap: 14px; }
+
+    label {
+      color: var(--muted);
+      font: 500 12px/1 'DM Mono', monospace;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .sentence-display {
+      min-width: 0;
+      flex: 1;
+      padding: 18px 20px;
+      color: var(--ink);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 0;
+      font: 16px 'Noto Sans JP', 'Noto Sans CJK JP', 'Yu Gothic', sans-serif;
+      line-height: 1.5;
+    }
+
+    button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 13px;
+      min-width: 132px;
+      padding: 0 22px;
+      color: #fffaf3;
+      background: var(--accent);
+      border: 0;
+      border-radius: 0;
+      cursor: pointer;
+      font: 600 15px 'Space Grotesk', sans-serif;
+      transition: background 160ms ease, transform 160ms ease;
+    }
+
+    button:hover { background: var(--accent-dark); transform: translateY(-2px); }
+    button:active { transform: translateY(0); }
+    button:focus-visible { outline: 3px solid rgba(232, 93, 54, 0.35); outline-offset: 3px; }
+
+    #next-sentence { background: var(--ink); }
+    #next-sentence:hover { background: #304239; }
+
+    .arrow { font-size: 20px; line-height: 0; }
+
+    .status {
+      min-height: 22px;
+      margin: 20px 0 0;
+      color: var(--accent-dark);
+      font: 14px 'DM Mono', monospace;
+    }
+
+    .analysis {
+      margin-top: 28px;
+      padding-top: 26px;
+      border-top: 1px solid var(--line);
+    }
+
+    .analysis h2 {
+      margin: 0 0 18px;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .vocabulary-groups {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .vocabulary-group {
+      padding: 16px;
+      background: rgba(243, 240, 232, 0.72);
+      border: 1px solid var(--line);
+    }
+
+    .vocabulary-group h3 {
+      margin: 0 0 14px;
+      color: var(--accent-dark);
+      font: 500 12px/1 'DM Mono', monospace;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .vocabulary-group dl { margin: 0; }
+    .vocabulary-group dt {
+      margin-top: 12px;
+      font: 500 17px 'Noto Sans JP', 'Noto Sans CJK JP', 'Yu Gothic', sans-serif;
+    }
+    .vocabulary-group dt:first-child { margin-top: 0; }
+    .kana {
+      color: var(--accent-dark);
+      font-size: 13px;
+      font-weight: 400;
+    }
+    .vocabulary-group dd {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .verb-explanation { color: var(--ink); }
+
+    .empty-vocabulary { color: var(--muted); font-size: 13px; }
+
+    @keyframes arrive {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 560px) {
+      main { width: min(100% - 24px, 880px); padding: 12px 0; }
+      .interface { padding: 28px 22px 32px; }
+      .input-row { flex-direction: column; }
+      .vocabulary-groups { grid-template-columns: 1fr; }
+      button { min-height: 54px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="interface" aria-labelledby="page-title">
+      <p class="eyebrow">A small place to begin</p>
+      <h1 id="page-title">Let's have fun<br>with Language Learning</h1>
+      <p class="intro">Please repeat the N4 sentence shown here</p>
+      <div id="sentence-panel">
+        <label for="sentence-display">speak the following sentense</label>
+        <div class="input-row">
+          <div class="sentence-display" id="sentence-display" role="status" aria-live="polite"></div>
+          <button id="read-sentence" type="button">Read sentence <span class="arrow" aria-hidden="true">→</span></button>
+          <button id="next-sentence" type="button">Next <span class="arrow" aria-hidden="true">→</span></button>
+        </div>
+      </div>
+      <p class="status" id="status" aria-live="polite"></p>
+      <section class="analysis" aria-labelledby="analysis-title">
+        <h2 id="analysis-title">N4 vocabulary in this sentence</h2>
+        <div class="vocabulary-groups" id="vocabulary-groups"></div>
+      </section>
+    </section>
+  </main>
+  <script>
+    const sentenceDisplay = document.querySelector('#sentence-display');
+    const readSentence = document.querySelector('#read-sentence');
+    const nextSentence = document.querySelector('#next-sentence');
+    const status = document.querySelector('#status');
+    const vocabularyGroups = document.querySelector('#vocabulary-groups');
+    const sentences = [
+      {
+        text: '日本語を勉強するために、毎日漢字を覚えています。',
+        nouns: [['日本語', 'にほんご', 'Japanese'], ['漢字', 'かんじ', 'kanji']],
+        verbs: [
+          ['勉強する', 'べんきょうする', 'dictionary form; purpose', '勉強する', 'The dictionary form comes before ために to mean “in order to study.”'],
+          ['覚えています', 'おぼえています', 'ている form; present progressive', '覚える', 'ています shows an action that is currently continuing: “am learning.”']
+        ]
+      },
+      {
+        text: '来週、友達と京都へ旅行に行く予定です。',
+        nouns: [['来週', 'らいしゅう', 'next week'], ['友達', 'ともだち', 'friend'], ['京都', 'きょうと', 'Kyoto'], ['旅行', 'りょこう', 'trip'], ['予定', 'よてい', 'plan / schedule']],
+        verbs: [['行く', 'いく', 'dictionary form; planned action', '行く', 'The dictionary form comes before 予定です to describe a future plan.']]
+      },
+      {
+        text: 'この薬を飲んだら、少し休んでください。',
+        nouns: [['薬', 'くすり', 'medicine'], ['少し', 'すこし', 'a little']],
+        verbs: [
+          ['飲んだら', 'のんだら', 'たら form; conditional', '飲む', 'The past form plus ら means “if / when you drink.”'],
+          ['休んでください', 'やすんでください', 'て-form + ください; request', '休む', 'The て-form plus ください makes a polite request: “please rest.”']
+        ]
+      },
+      {
+        text: '昨日買った本は、とてもおもしろかったです。',
+        nouns: [['昨日', 'きのう', 'yesterday'], ['本', 'ほん', 'book']],
+        verbs: [['買った', 'かった', 'た form; past', '買う', 'The past form modifies 本: “the book that I bought.”']],
+        adjectives: [['おもしろかった', 'おもしろかった', 'interesting; past い-adjective', 'おもしろい']]
+      },
+      {
+        text: '駅に着いたとき、電車はもう出たあとでした。',
+        nouns: [['駅', 'えき', 'station'], ['電車', 'でんしゃ', 'train'], ['あと', 'あと', 'after / later']],
+        verbs: [
+          ['着いた', 'ついた', 'た form; past', '着く', 'The past form comes before とき: “when I arrived.”'],
+          ['出た', 'でた', 'た form; past', '出る', 'The past form comes before あと: “after it left.”']
+        ]
+      },
+      {
+        text: '雨が降っているので、今日は家で映画を見ます。',
+        nouns: [['雨', 'あめ', 'rain'], ['今日', 'きょう', 'today'], ['家', 'いえ', 'home / house'], ['映画', 'えいが', 'movie']],
+        verbs: [
+          ['降っている', 'ふっている', 'ている form; present progressive', '降る', 'ています describes an action in progress: “it is raining.”'],
+          ['見ます', 'みます', 'ます form; polite non-past', '見る', 'The ます form is polite and non-past: “watch / will watch.”']
+        ]
+      }
+    ];
+
+    let currentSentence = -1;
+
+    function showRandomSentence() {
+      let nextIndex = Math.floor(Math.random() * sentences.length);
+      while (sentences.length > 1 && nextIndex === currentSentence) {
+        nextIndex = Math.floor(Math.random() * sentences.length);
+      }
+      currentSentence = nextIndex;
+      const sentence = sentences[currentSentence];
+      sentenceDisplay.textContent = sentence.text;
+      renderVocabulary(sentence);
+      status.textContent = 'A new N4 sentence is ready.';
+    }
+
+    function renderVocabulary(sentence) {
+      const groups = [
+        ['Nouns', 'nouns'],
+        ['Verbs', 'verbs'],
+        ['Adjectives', 'adjectives']
+      ];
+      vocabularyGroups.innerHTML = groups.map(([title, key]) => {
+        const entries = sentence[key] || [];
+        const content = entries.length
+          ? `<dl>${entries.map(([word, kana, meaning, dictionaryForm, explanation]) => `<dt>${word} <span class="kana">(${kana})</span></dt><dd>${meaning}${dictionaryForm ? ` · Dictionary: ${dictionaryForm}` : ''}${explanation ? `<br><span class="verb-explanation">${explanation}</span>` : ''}</dd>`).join('')}</dl>`
+          : '<p class="empty-vocabulary">None in this sentence.</p>';
+        return `<article class="vocabulary-group"><h3>${title}</h3>${content}</article>`;
+      }).join('');
+    }
+
+    function speakCurrentSentence(voices) {
+      const utterance = new SpeechSynthesisUtterance(sentences[currentSentence].text);
+      utterance.lang = 'ja-JP';
+      utterance.rate = 0.85;
+      utterance.voice = voices.find((voice) => voice.lang.toLowerCase().startsWith('ja')) || null;
+      window.speechSynthesis.speak(utterance);
+      status.textContent = 'Reading the sentence aloud.';
+    }
+
+    readSentence.addEventListener('click', () => {
+      window.speechSynthesis.cancel();
+      const voices = window.speechSynthesis.getVoices();
+      if (!voices.length) {
+        status.textContent = 'Loading the Japanese voice...';
+        let hasSpoken = false;
+        let fallbackTimer;
+        const loadVoicesAndSpeak = () => {
+          const loadedVoices = window.speechSynthesis.getVoices();
+          if (!loadedVoices.length || hasSpoken) return;
+          hasSpoken = true;
+          window.clearTimeout(fallbackTimer);
+          window.speechSynthesis.removeEventListener('voiceschanged', loadVoicesAndSpeak);
+          speakCurrentSentence(loadedVoices);
+        };
+        window.speechSynthesis.addEventListener('voiceschanged', loadVoicesAndSpeak, { once: true });
+        fallbackTimer = window.setTimeout(() => {
+          const loadedVoices = window.speechSynthesis.getVoices();
+          window.speechSynthesis.removeEventListener('voiceschanged', loadVoicesAndSpeak);
+          if (loadedVoices.length && !hasSpoken) {
+            hasSpoken = true;
+            speakCurrentSentence(loadedVoices);
+          } else if (!hasSpoken) {
+            status.textContent = 'No speech voice is available. Install a Japanese voice and restart the browser.';
+          }
+        }, 1500);
+        return;
+      }
+      speakCurrentSentence(voices);
+    });
+    nextSentence.addEventListener('click', showRandomSentence);
+    showRandomSentence();
+  </script>
+</body>
+</html>
